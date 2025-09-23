@@ -1,5 +1,10 @@
 # 🎮 Simple Game with Pygame  
 
+![Snake Game - 1](screenshot/Snake-1.PNG)
+
+![Snake Game - 2](screenshot/Snake-2.PNG)
+
+
 This project is a **simple game** built with **Python (v3.7.9)** and **Pygame (v2.1.2)**.  
 It is the **first version (v1.0)** of the game.  
 
