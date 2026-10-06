@@ -1,76 +1,53 @@
 import pygame
-from color import Color
+from setting import CELL_SIZE, SNAKE_COLOR, SNAKE_HEAD_COLOR, RIGHT, GRID_SIZE
 
-class Snake(pygame.sprite.Sprite):
-    def __init__(self,width = 32,height = 32,
-                 center_x = 0,center_y = 0,
-                 color = (0,0,0)):
-        super().__init__()
-        self.width = width
-        self.height = height
-        self.center_x = center_x
-        self.center_y = center_y
-        self.color = color
-        self.speed = 4
-        self.direction = ""
-        self.rect = pygame.Rect(self.center_x, self.center_y,
-                             self.width, self.height)
-        self.score = 0
-        self.body = []
+
+class Snake:
+    def __init__(self, start_cell=(10, 10), length=1):
+        self.direction = RIGHT
+        self.next_direction = RIGHT
+        self.pending_growth = 0
+        self.body = [
+            (start_cell[0] - i, start_cell[1])
+            for i in range(length)
+        ]
+
+    @property
+    def head(self):
+        return self.body[0]
+
+    def grow(self, amount=1):
+        self.pending_growth += amount
 
     def move(self):
-        self.body.append({"x" : self.center_x,"y" : self.center_y})
-        if len(self.body) > self.score / 10:
-            self.body.pop(0)
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            self.direction = "l"
-        if keys[pygame.K_RIGHT]:
-            self.direction = "r"
-        if keys[pygame.K_UP]:
-            self.direction = "u"
-        if keys[pygame.K_DOWN]:
-            self.direction = "d"
+        self.direction = self.next_direction
+        head_col, head_row = self.head
+        dx, dy = self.direction
+        self.body.insert(0, (head_col + dx, head_row + dy))
 
-        
-        if self.direction == "l":
-            self.center_x -= self.speed
-        elif self.direction == "r":
-            self.center_x += self.speed
-        elif self.direction == "d":
-            self.center_y += self.speed
-        elif self.direction == "u":
-            self.center_y -= self.speed
+        if self.pending_growth > 0:
+            self.pending_growth -= 1
+        else:
+            self.body.pop()
 
+    def draw(self, surface):
+        for index, (col, row) in enumerate(self.body):
+            color = SNAKE_HEAD_COLOR if index == 0 else SNAKE_COLOR
+            rect = pygame.Rect(
+                col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE
+            )
+            pygame.draw.rect(surface, color, rect)
 
-        self.rect.topleft = (self.center_x, self.center_y)
-    
-    def eat(self,food):
-        self.score += 10
-        del food
-        
+    def set_direction(self, new_direction):
+        dx, dy = self.direction
+        new_dx, new_dy = new_direction
+        is_reverse = (dx + new_dx, dy + new_dy) == (0, 0)
+        if not is_reverse:
+            self.next_direction = new_direction
 
-    def check_wall(self,main):
-        for part in self.body:
-            if 0 > part['x']:
-                self.center_x = 0
-                return True
-            elif part['x'] >= main.width - 32:
-                self.center_x = main.width - self.width
-                return True
-            elif part['y'] < 0:
-                self.center_y = 0
-                return True
-            elif part['y'] >= main.height - 32:
-                self.center_y = main.height - self.width
-                return True
-            else:
-                return False
+    def hits_wall(self):
+        col, row = self.head
+        return not (0 <= col < GRID_SIZE and 0 <= row < GRID_SIZE)
 
-    def draw(self,main):
-        pygame.draw.rect(main,self.color,
-                           self.rect)
-        for part in self.body:
-            pygame.draw.rect(main,self.color,
-                           pygame.Rect(part['x'],part['y'],
-                                       self.width,self.height))
+    def hits_itself(self):
+        return self.head in self.body[1:]
