@@ -76,6 +76,13 @@ class Game:
 
         self.snake.move()
 
+        #Test
+        for_test = 0
+        if for_test == 0:
+            print(f"Snake Head {self.snake.head}")
+            print(f"Fruit Cell {self.fruit.cell}")
+            for_test = 1
+
         if self.snake.hits_wall() or self.snake.hits_itself():
             self.game_over = True
             return

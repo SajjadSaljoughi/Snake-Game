@@ -21,4 +21,4 @@ Thumbs.db
 # Python Jupyter notebook checkpoints
 .ipynb_checkpoints/
 
-
+.idea

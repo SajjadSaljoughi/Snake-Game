@@ -1,8 +1,11 @@
+import pandas as pd
 from setting import GRID_SIZE, UP, DOWN, LEFT, RIGHT
-
 ALL_DIRECTIONS = [UP, DOWN, LEFT, RIGHT]
 
-class SnakeAI:
+
+class GenerateDataset:
+    def __init__(self):
+        self.dataset = []
     def choose_direction(self, snake, fruit_cell):
         candidates = self._preferred_directions(snake.head, fruit_cell) + ALL_DIRECTIONS
         for direction in candidates:

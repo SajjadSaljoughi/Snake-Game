@@ -35,9 +35,7 @@ In the future, there may be more advanced versions of this game, possibly enhanc
 
 ## 📅 Project Status
 
-Current version: v1.0 (Simple OOP Version)
-
-Future versions: May include better graphics and AI-based features
+Current version: v2.0 (AI)
 
 ## 👨‍💻 Author
 
