@@ -6,7 +6,7 @@ class SnakeAI:
     def choose_direction(self, snake, fruit_cell):
         candidates = self._preferred_directions(snake.head, fruit_cell) + ALL_DIRECTIONS
         for direction in candidates:
-            if self._is_safe(snake, direction):
+            if snake.is_move_safe(direction):
                 return direction
         return snake.direction
 
@@ -27,19 +27,3 @@ class SnakeAI:
             preferred.append(UP)
 
         return preferred
-
-    @staticmethod
-    def _is_safe(snake, direction):
-        dx, dy = direction
-        cur_dx, cur_dy = snake.direction
-        if (dx + cur_dx, dy + cur_dy) == (0, 0):
-            return False
-
-        col, row = snake.head
-        next_cell = (col + dx, row + dy)
-
-        if not (0 <= next_cell[0] < GRID_SIZE and 0 <= next_cell[1] < GRID_SIZE):
-            return False
-
-        blocking_cells = snake.body if snake.pending_growth > 0 else snake.body[:-1]
-        return next_cell not in blocking_cells

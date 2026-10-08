@@ -1,16 +1,31 @@
-import pandas as pd
+from features import extract_features
 from setting import GRID_SIZE, UP, DOWN, LEFT, RIGHT
+
 ALL_DIRECTIONS = [UP, DOWN, LEFT, RIGHT]
 
 
 class GenerateDataset:
     def __init__(self):
         self.dataset = []
+
     def choose_direction(self, snake, fruit_cell):
         candidates = self._preferred_directions(snake.head, fruit_cell) + ALL_DIRECTIONS
         for direction in candidates:
-            if self._is_safe(snake, direction):
+            if snake.is_move_safe(direction):
+                features = extract_features(snake, fruit_cell)
+                y = ""
+                if direction == UP:
+                    y = "u"
+                elif direction == DOWN:
+                    y = "d"
+                elif direction == LEFT:
+                    y = "l"
+                elif direction == RIGHT:
+                    y = "r"
+                features.append(y)
+                self.dataset.append(features)
                 return direction
+
         return snake.direction
 
     @staticmethod
@@ -30,19 +45,3 @@ class GenerateDataset:
             preferred.append(UP)
 
         return preferred
-
-    @staticmethod
-    def _is_safe(snake, direction):
-        dx, dy = direction
-        cur_dx, cur_dy = snake.direction
-        if (dx + cur_dx, dy + cur_dy) == (0, 0):
-            return False
-
-        col, row = snake.head
-        next_cell = (col + dx, row + dy)
-
-        if not (0 <= next_cell[0] < GRID_SIZE and 0 <= next_cell[1] < GRID_SIZE):
-            return False
-
-        blocking_cells = snake.body if snake.pending_growth > 0 else snake.body[:-1]
-        return next_cell not in blocking_cells

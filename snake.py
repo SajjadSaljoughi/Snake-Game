@@ -51,3 +51,18 @@ class Snake:
 
     def hits_itself(self):
         return self.head in self.body[1:]
+
+    def is_move_safe(self, direction):
+        dx, dy = direction
+        cur_dx, cur_dy = self.direction
+        if (dx + cur_dx, dy + cur_dy) == (0, 0):
+            return False
+
+        col, row = self.head
+        next_cell = (col + dx, row + dy)
+
+        if not (0 <= next_cell[0] < GRID_SIZE and 0 <= next_cell[1] < GRID_SIZE):
+            return False
+
+        blocking_cells = self.body if self.pending_growth > 0 else self.body[:-1]
+        return next_cell not in blocking_cells

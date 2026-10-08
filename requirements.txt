@@ -1,1 +1,4 @@
+tensorflew
+pandas
+numpy
 pygame~=2.6.1

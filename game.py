@@ -8,7 +8,7 @@ from setting import (
     SCORE_COLOR, SCORE_MARGIN,
     BOARD_DARK_COLOR, BOARD_LIGHT_COLOR, LIGHT_BROWN_COLOR
 )
-
+import os
 KEY_TO_DIRECTION = {
     pygame.K_UP: UP,
     pygame.K_DOWN: DOWN,
@@ -16,12 +16,16 @@ KEY_TO_DIRECTION = {
     pygame.K_RIGHT: RIGHT,
 }
 from snake_ai import SnakeAI
-
+from generate_dataset import GenerateDataset
+from snake_ml import SnakeML
+import pandas as pd
 
 class Game:
     def __init__(self, screen: Surface, mode="manual"):
         self.mode = mode
         self.ai = SnakeAI() if mode == "ai" else None
+        self.generate_dataset = GenerateDataset() if mode == "ai" else None
+        self.ml = SnakeML() if mode == "ml" else None
         self.screen = screen
         self.snake = Snake(length=1)
         self.fruit = Fruit(self.snake.body)
@@ -72,18 +76,34 @@ class Game:
 
         if self.ai is not None:
             direction = self.ai.choose_direction(self.snake, self.fruit.cell)
+            self.generate_dataset.choose_direction(self.snake, self.fruit.cell)
+            self.snake.set_direction(direction)
+
+        if self.ml is not None:
+            direction = self.ml.choose_direction(self.snake, self.fruit.cell)
             self.snake.set_direction(direction)
 
         self.snake.move()
 
-        #Test
-        for_test = 0
-        if for_test == 0:
-            print(f"Snake Head {self.snake.head}")
-            print(f"Fruit Cell {self.fruit.cell}")
-            for_test = 1
-
         if self.snake.hits_wall() or self.snake.hits_itself():
+
+            if self.ai is not None:
+
+                df = pd.DataFrame(self.generate_dataset.dataset)
+
+                if os.path.exists("screenshot/dataset.csv"):
+                    df_test = pd.read_csv("screenshot/dataset.csv")
+
+                    new_df = pd.concat(
+                        [df_test, df],
+                        ignore_index=True
+                    )
+
+                    new_df.to_csv("dataset.csv", index=False)
+
+                else:
+                    df.to_csv("dataset.csv", index=False)
+
             self.game_over = True
             return
 
