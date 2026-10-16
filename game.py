@@ -87,22 +87,22 @@ class Game:
 
         if self.snake.hits_wall() or self.snake.hits_itself():
 
-            if self.ai is not None:
-
-                df = pd.DataFrame(self.generate_dataset.dataset)
-
-                if os.path.exists("screenshot/dataset.csv"):
-                    df_test = pd.read_csv("screenshot/dataset.csv")
-
-                    new_df = pd.concat(
-                        [df_test, df],
-                        ignore_index=True
-                    )
-
-                    new_df.to_csv("dataset.csv", index=False)
-
-                else:
-                    df.to_csv("dataset.csv", index=False)
+            # if self.ai is not None:
+            #
+            #     df = pd.DataFrame(self.generate_dataset.dataset)
+            #
+            #     if os.path.exists("screenshot/dataset.csv"):
+            #         df_test = pd.read_csv("screenshot/dataset.csv")
+            #
+            #         new_df = pd.concat(
+            #             [df_test, df],
+            #             ignore_index=True
+            #         )
+            #
+            #         new_df.to_csv("dataset.csv", index=False)
+            #
+            #     else:
+            #         df.to_csv("dataset.csv", index=False)
 
             self.game_over = True
             return

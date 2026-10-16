@@ -2,6 +2,10 @@
 
 A classic Snake game built with **Python** and **Pygame**, with three ways to play:
 
+
+
+
+
 | Mode | Who controls the snake? |
 |------|-------------------------|
 | **Manual** | You, with the arrow keys |
@@ -193,9 +197,6 @@ Tweak the game in `setting.py`:
 
 Contributions, issues, and feature requests are welcome. Feel free to open an issue or submit a pull request.
 
-## 📄 License
-
-Distributed under the MIT License. Add a `LICENSE` file to the repository to make this official.
 
 ## 👤 Author
 
